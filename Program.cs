@@ -1,4 +1,5 @@
-﻿List<Pallet> pallets = [];
+﻿// Pallets and boxes generation
+List<Pallet> pallets = [];
 
 DataGeneration data_generation = new();
 foreach (var pallet_dictionary in data_generation.GeneratePalletProperties())
@@ -8,6 +9,6 @@ foreach (var pallet_dictionary in data_generation.GeneratePalletProperties())
     {
         boxes.Add(new Box(box_dictionary));
     }
-    // TODO: check the condition for boxes
+    // TODO: add the condition for boxes
     pallets.Add(new Pallet(pallet_dictionary, boxes));
 }

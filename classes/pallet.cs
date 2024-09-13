@@ -1,5 +1,3 @@
-using System.Dynamic;
-
 public class Pallet(Dictionary<string, float> dict, List<Box> boxes)
 {
     // TODO: find a way, how to instantiate it
@@ -32,5 +30,21 @@ public class Pallet(Dictionary<string, float> dict, List<Box> boxes)
             }
             return volume;
         }
-    }    
+    }
+
+    public DateTime pallet_expiration_date 
+    {
+        get 
+        {
+            DateTime min_date = DateTime.MaxValue.Date;
+            foreach (Box box in Boxes)
+            {
+                if (min_date > box.expiration_date)
+                {
+                    min_date = box.expiration_date;
+                }
+            }
+            return min_date;
+        }
+    }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-
 public enum PalletProperties
 {
     length,
@@ -27,6 +25,7 @@ public class DataGeneration
     readonly static Random random = new(42);
 
     public IEnumerable<Dictionary<string, float>> GeneratePalletProperties()
+    // Creates properties (id, length, width, height) for each pallet
     {
         for (int i = 0; i < n_pallets; i++) {
             Dictionary<string, float> palletProperties = new()
@@ -43,6 +42,7 @@ public class DataGeneration
     }
 
     public IEnumerable<Dictionary<string, object>> GenerateBoxProperties()
+    // Creates properties (id, length, width, height, weight, production and expiration dates) for each box
     {
         int n_boxes = random.Next(1, 10);
         for (int i = 0; i < n_boxes; i++) {
@@ -55,7 +55,7 @@ public class DataGeneration
             {   
                 if (property.ToString().Contains("date")) {
                     // TODO: add a random property generation
-                    boxProperties[property.ToString()] = GetRandomDay();
+                    boxProperties[property.ToString()] = GetRandomDay().Date;
                 }
                 else {
                     boxProperties[property.ToString()] = max_box_coefficient * random.NextSingle();
@@ -67,7 +67,8 @@ public class DataGeneration
         }
     }
 
-    static DateTime GetRandomDay() 
+    static DateTime GetRandomDay()
+    // Uses for random date generation
     {
         DateTime start = new(2000, 1, 1);
         int range = (DateTime.Today - start).Days;
