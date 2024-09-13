@@ -11,18 +11,19 @@ public enum BoxProperties
     width,
     height,
     weight,
-    production_date,
-    expiration_date,
+    date,
 }
 
 public class DataGeneration
 {
-    int box_idx = 0;
+    static int box_idx = 0;
     readonly static int n_pallets = 10;
     readonly int max_pallet_size = 100;
     readonly int min_pallet_size = 30;
     readonly int max_box_coefficient = 50;
     readonly static Random random = new(42);
+    readonly static float threshold = 0.5f;
+    readonly DateTime default_date = new DateTime(2024, 1, 1);
 
     public IEnumerable<Dictionary<string, float>> GeneratePalletProperties()
     // Creates properties (id, length, width, height) for each pallet
@@ -45,7 +46,8 @@ public class DataGeneration
     // Creates properties (id, length, width, height, weight, production and expiration dates) for each box
     {
         int n_boxes = random.Next(1, 10);
-        for (int i = 0; i < n_boxes; i++) {
+        int i = 0;
+        while (i < n_boxes) {
             Dictionary<string, object> boxProperties = new()
             {
                 ["ID"] = box_idx
@@ -53,25 +55,36 @@ public class DataGeneration
 
             foreach (BoxProperties property in Enum.GetValues(typeof(BoxProperties)))
             {   
+                DateTime random_date = GetRandomDay(default_date);
                 if (property.ToString().Contains("date")) {
-                    // TODO: add a random property generation
-                    boxProperties[property.ToString()] = GetRandomDay().Date;
+                    // Generate production and expiration dates
+                    bool production_condition = random.NextSingle() > threshold;
+                    bool expiration_condition = random.NextSingle() > threshold;
+                    if (production_condition || (!expiration_condition && !production_condition))
+                    {
+                        boxProperties["production_" + property.ToString()] = random_date;
+                    }
+                    if (expiration_condition)
+                    {
+                        boxProperties["expiration_" + property.ToString()] = GetRandomDay(new DateTime(random_date.Year, random_date.Month, random_date.Day));
+                    }
                 }
                 else {
                     boxProperties[property.ToString()] = max_box_coefficient * random.NextSingle();
                 }
             }
-            box_idx += 1;
+            i++;
+            box_idx++;
 
             yield return boxProperties;
         }
     }
 
-    static DateTime GetRandomDay()
+    static DateTime GetRandomDay(DateTime date)
     // Uses for random date generation
     {
-        DateTime start = new(2000, 1, 1);
-        int range = (DateTime.Today - start).Days;
+        DateTime start = new(date.Year, date.Month, date.Day);
+        int range = (new DateTime(2025, 1, 1) - start).Days;
         return start.AddDays(random.Next(range));
     }
 }
