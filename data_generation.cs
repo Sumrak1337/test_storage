@@ -1,3 +1,5 @@
+using System.Collections;
+
 public enum PalletProperties
 {
     length,
@@ -10,50 +12,56 @@ public enum BoxProperties
     length,
     width,
     height,
+    weight,
     production_date,
     expiration_date,
 }
 
 public class DataGeneration
 {
+    int box_idx = 0;
+    readonly static int n_pallets = 10;
     readonly int max_pallet_size = 100;
-    readonly int max_box_size = 50;
-    static Random random = new(42);
+    readonly int min_pallet_size = 30;
+    readonly int max_box_coefficient = 50;
+    readonly static Random random = new(42);
 
-    public IEnumerable<Dictionary<string, double>> GeneratePalletProperties(int n_pallets) 
+    public IEnumerable<Dictionary<string, float>> GeneratePalletProperties()
     {
         for (int i = 0; i < n_pallets; i++) {
-            Dictionary<string, double> palletProperties = new()
+            Dictionary<string, float> palletProperties = new()
             {
                 ["ID"] = i
             };
 
             foreach (PalletProperties property in Enum.GetValues(typeof(PalletProperties)))
             {
-                palletProperties[property.ToString()] = max_pallet_size * random.NextDouble();
+                palletProperties[property.ToString()] = (max_pallet_size - min_pallet_size) * random.NextSingle() + min_pallet_size;
             }
             yield return palletProperties;
         }
     }
 
-    public IEnumerable<Dictionary<string, object>> GenerateBoxProperties(int n_boxes) 
+    public IEnumerable<Dictionary<string, object>> GenerateBoxProperties()
     {
+        int n_boxes = random.Next(1, 10);
         for (int i = 0; i < n_boxes; i++) {
             Dictionary<string, object> boxProperties = new()
             {
-                ["ID"] = i
+                ["ID"] = box_idx
             };
 
             foreach (BoxProperties property in Enum.GetValues(typeof(BoxProperties)))
             {   
                 if (property.ToString().Contains("date")) {
-                    
+                    // TODO: add a random property generation
                     boxProperties[property.ToString()] = GetRandomDay();
                 }
                 else {
-                    boxProperties[property.ToString()] = max_box_size * random.NextDouble();
+                    boxProperties[property.ToString()] = max_box_coefficient * random.NextSingle();
                 }
             }
+            box_idx += 1;
 
             yield return boxProperties;
         }
