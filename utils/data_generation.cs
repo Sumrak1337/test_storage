@@ -17,7 +17,7 @@ public enum BoxProperties
 public class DataGeneration
 {
     static int box_idx = 0;
-    readonly static int n_pallets = 10;
+    readonly static int n_pallets = 1000;
     readonly int max_pallet_size = 100;
     readonly int min_pallet_size = 30;
     readonly int max_box_coefficient = 50;
@@ -45,7 +45,7 @@ public class DataGeneration
     public IEnumerable<Dictionary<string, object>> GenerateBoxProperties()
     // Creates properties (id, length, width, height, weight, production and expiration dates) for each box
     {
-        int n_boxes = random.Next(1, 10);
+        int n_boxes = random.Next(1, 1000);
         int i = 0;
         while (i < n_boxes) {
             Dictionary<string, object> boxProperties = new()
