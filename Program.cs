@@ -7,8 +7,11 @@ foreach (var pallet_dictionary in data_generation.GeneratePalletProperties())
     List<Box> boxes = [];
     foreach (var box_dictionary in data_generation.GenerateBoxProperties())
     {
-        boxes.Add(new Box(box_dictionary));
+        Box box = new(box_dictionary);
+        if (box.box_length <= pallet_dictionary["length"] && box.box_width <= pallet_dictionary["width"])
+        {
+            boxes.Add(box);
+        }
     }
-    // TODO: add the condition for boxes
     pallets.Add(new Pallet(pallet_dictionary, boxes));
 }
